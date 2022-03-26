@@ -1,5 +1,6 @@
 # jdisko
-JDisKo is multiplatform JDK downloader using [foojay's discoapi](https://github.com/foojayio/discoapi) and [discoclient](https://github.com/foojayio/discoclient).
+JDisKo is a cross-platform JDK installer using
+[foojay's discoapi](https://github.com/foojayio/discoapi) and [discoclient](https://github.com/foojayio/discoclient).
 
 ## Install
 * Download an executable file which fits your OS from [JDisko Releases](https://github.com/kwon37xi/jdisko/releases).
