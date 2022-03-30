@@ -6,6 +6,7 @@ JDisKo is a cross-platform JDK installer using
 * Download an executable file which fits your OS from [JDisko Releases](https://github.com/kwon37xi/jdisko/releases).
 
 ## TODO
+* disco client 를 추상화할것. 옵션이 너무 많음.
 * 각 메이저 버전별 최신 버전 목록 리스팅
 * 각 배포판별 리스팅
 * 다운로드 및 설치

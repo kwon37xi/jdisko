@@ -1,6 +1,6 @@
 package com.github.kwon37xi.jdisko;
 
-import com.github.kwon37xi.jdisko.commands.JDisKoVersionProvider;
+import com.github.kwon37xi.jdisko.commands.DistributionsCommand;
 import com.github.kwon37xi.jdisko.commands.ListCommand;
 import picocli.CommandLine.Command;
 
@@ -10,7 +10,8 @@ import picocli.CommandLine.Command;
         versionProvider = JDisKoVersionProvider.class,
         mixinStandardHelpOptions = true,
         subcommands = {
-                ListCommand.class
+                ListCommand.class,
+                DistributionsCommand.class
         }
 )
 public class JDisKoCommand implements Runnable {
