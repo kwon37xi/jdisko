@@ -10,7 +10,6 @@ import picocli.CommandLine.Command;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Command(
         name = "list",
@@ -19,15 +18,12 @@ import java.util.Map;
 public class ListCommand extends BaseCommand implements Runnable {
     @Override
     public void run() {
-        final Map<String, Distribution> distros = discoClient().getDistros();
-        final Distribution temurin = distros.get("temurin");
-        final String osName = System.getProperty("os.name");
-        final OperatingSystem operatingSystem = OperatingSystem.fromText(osName);
-        final String osArch = System.getProperty("os.arch");
-        final Architecture architecture = Architecture.fromText(osArch);
+        final Distribution defaultDistribution = defaultDistribution();
+        final OperatingSystem operatingSystem = operatingSystem();
+        final Architecture architecture = architecture();
 
-        System.out.printf("OS %s(%s), arch : %s(%s) ", operatingSystem, osName, architecture, osArch);
-        final List<Pkg> pkgs = discoClient().getPkgs(List.of(temurin), null, Latest.AVAILABLE, operatingSystem, operatingSystem.getLibCType(), architecture, null, null, PackageType.JDK, null, null, null,
+        System.out.printf("OS %s, arch : %s ", operatingSystem, architecture);
+        final List<Pkg> pkgs = discoClient().getPkgs(List.of(defaultDistribution), null, Latest.AVAILABLE, operatingSystem, operatingSystem.getLibCType(), architecture, null, null, PackageType.JDK, null, null, null,
                 null, null, null, null);
         pkgs.sort(Comparator.comparing(pkg -> pkg.getJavaVersion()));
         pkgs.forEach(pkg -> {
@@ -35,4 +31,6 @@ public class ListCommand extends BaseCommand implements Runnable {
             System.out.printf("%s %s %s%n", distribution.getName(), pkg.getJavaVersion(), pkg);
         });
     }
+
+
 }

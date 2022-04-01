@@ -1,5 +1,6 @@
 package com.github.kwon37xi.jdisko.commands;
 
+import eu.hansolo.jdktools.OperatingSystem;
 import io.foojay.api.discoclient.pkg.Distribution;
 import picocli.CommandLine;
 
@@ -10,6 +11,11 @@ import java.util.List;
         description = "list all distributions"
 )
 public class DistributionsCommand extends BaseCommand implements Runnable {
+
+    @Override
+    protected OperatingSystem operatingSystem() {
+        return super.operatingSystem();
+    }
 
     @Override
     public void run() {

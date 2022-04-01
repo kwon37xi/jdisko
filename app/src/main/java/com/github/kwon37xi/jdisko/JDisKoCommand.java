@@ -1,6 +1,7 @@
 package com.github.kwon37xi.jdisko;
 
 import com.github.kwon37xi.jdisko.commands.DistributionsCommand;
+import com.github.kwon37xi.jdisko.commands.InstallCommand;
 import com.github.kwon37xi.jdisko.commands.ListCommand;
 import picocli.CommandLine.Command;
 
@@ -11,6 +12,7 @@ import picocli.CommandLine.Command;
         mixinStandardHelpOptions = true,
         subcommands = {
                 ListCommand.class,
+                InstallCommand.class,
                 DistributionsCommand.class
         }
 )

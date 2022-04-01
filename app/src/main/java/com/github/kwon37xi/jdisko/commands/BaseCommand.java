@@ -1,6 +1,13 @@
 package com.github.kwon37xi.jdisko.commands;
 
+import eu.hansolo.jdktools.*;
+import eu.hansolo.jdktools.versioning.VersionNumber;
 import io.foojay.api.discoclient.DiscoClient;
+import io.foojay.api.discoclient.pkg.Distribution;
+import io.foojay.api.discoclient.pkg.Pkg;
+
+import java.util.List;
+import java.util.Map;
 
 public abstract class BaseCommand {
     public static final int MAX_WAIT_ELAPSED_MILLIS = 10000;
@@ -24,7 +31,66 @@ public abstract class BaseCommand {
         }
     }
 
-    public DiscoClient discoClient() {
+    protected DiscoClient discoClient() {
         return discoClient;
+    }
+
+    protected Distribution defaultDistribution() {
+        final Map<String, Distribution> distros = discoClient().getDistros();
+        final Distribution defaultDistribution = distros.get("defaultDistribution");
+        return defaultDistribution;
+    }
+
+    protected Distribution findDistribution(String distributionStr) {
+        if (distributionStr == null || distributionStr.isBlank()) {
+            return defaultDistribution();
+        }
+        final Distribution distribution = discoClient().getDistros().get(distributionStr.toLowerCase());
+        if (distribution == null) {
+            throw new IllegalArgumentException(String.format("distribution '%s' is unknown.", distributionStr));
+        }
+        return distribution;
+    }
+
+    protected OperatingSystem operatingSystem() {
+        final String osName = System.getProperty("os.name");
+        final OperatingSystem operatingSystem = OperatingSystem.fromText(osName);
+        return operatingSystem;
+    }
+
+    protected Architecture architecture() {
+        final String osArch = System.getProperty("os.arch");
+        final Architecture architecture = Architecture.fromText(osArch);
+        return architecture;
+    }
+
+    protected List<Pkg> findPackages(Distribution distribution, String version) {
+        return findPackages(distribution, version, operatingSystem(), architecture());
+    }
+
+    protected List<Pkg> findPackages(Distribution distribution, String version, OperatingSystem operatingSystem, Architecture architecture) {
+        ArchiveType archiveType = archiveTypeForOS(operatingSystem);
+        return discoClient().getPkgs(List.of(distribution),
+                VersionNumber.fromText(version),
+                Latest.PER_VERSION, operatingSystem,
+                operatingSystem.getLibCType(),
+                architecture,
+                null,
+                archiveType,
+                PackageType.JDK,
+                Boolean.FALSE,
+                null,
+                List.of(ReleaseStatus.GA),
+                null,
+                null,
+                null);
+    }
+
+    private ArchiveType archiveTypeForOS(OperatingSystem operatingSystem) {
+        if (operatingSystem.name().toLowerCase().contains("windows")) {
+            return ArchiveType.ZIP;
+        }
+        return ArchiveType.TAR_GZ;
+
     }
 }
