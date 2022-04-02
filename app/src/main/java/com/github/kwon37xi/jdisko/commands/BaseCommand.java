@@ -38,7 +38,7 @@ public abstract class BaseCommand {
 
     protected Distribution defaultDistribution() {
         final Map<String, Distribution> distros = discoClient().getDistros();
-        final Distribution defaultDistribution = distros.get("defaultDistribution");
+        final Distribution defaultDistribution = distros.get("temurin");
         return defaultDistribution;
     }
 
