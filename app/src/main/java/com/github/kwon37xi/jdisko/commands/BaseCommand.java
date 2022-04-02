@@ -6,6 +6,7 @@ import io.foojay.api.discoclient.DiscoClient;
 import io.foojay.api.discoclient.pkg.Distribution;
 import io.foojay.api.discoclient.pkg.Pkg;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -91,6 +92,20 @@ public abstract class BaseCommand {
             return ArchiveType.ZIP;
         }
         return ArchiveType.TAR_GZ;
+    }
 
+    /**
+     *
+     */
+    protected Path jdiskoHome() {
+        return Path.of(System.getProperty("user.home"), ".jdisko");
+    }
+
+    protected Path distributionHome(Distribution distribution) {
+        return jdiskoHome().resolve(distribution.getName().toLowerCase());
+    }
+
+    protected Path packageHome(Pkg jdk) {
+        return distributionHome(jdk.getDistribution()).resolve(jdk.getJavaVersion().toString());
     }
 }

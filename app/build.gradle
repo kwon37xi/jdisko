@@ -16,6 +16,8 @@ dependencies {
     implementation 'io.foojay.api:discoclient:2.0.23'
     // https://mvnrepository.com/artifact/info.picocli/picocli
     implementation 'info.picocli:picocli:4.6.3'
+    // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
+    implementation 'org.apache.commons:commons-compress:1.21'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
