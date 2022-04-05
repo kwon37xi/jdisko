@@ -20,7 +20,8 @@ import java.util.stream.Collectors;
 
 @Command(
         name = "install",
-        description = "install JDK"
+        aliases = {"i"},
+        description= "install JDK"
 )
 public class InstallCommand extends BaseCommand implements Runnable {
     @Option(names = {"-d", "--distribution"}, description = "target distribution")

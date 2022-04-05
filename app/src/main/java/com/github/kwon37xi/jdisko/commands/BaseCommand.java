@@ -102,10 +102,17 @@ public abstract class BaseCommand {
     }
 
     protected Path distributionHome(Distribution distribution) {
-        return jdiskoHome().resolve(distribution.getName().toLowerCase());
+        return jdiskoHome().resolve(distribution.getName().toLowerCase()).toAbsolutePath();
     }
 
     protected Path packageHome(Pkg jdk) {
-        return distributionHome(jdk.getDistribution()).resolve(jdk.getJavaVersion().toString());
+        return distributionHome(jdk.getDistribution()).resolve(jdk.getJavaVersion().toString()).toAbsolutePath();
+    }
+
+    /**
+     * JDK javaVersion home directory
+     */
+    protected Path javaVersionHome(Distribution distribution, String javaVersion) {
+        return distributionHome(distribution).resolve(javaVersion).toAbsolutePath();
     }
 }

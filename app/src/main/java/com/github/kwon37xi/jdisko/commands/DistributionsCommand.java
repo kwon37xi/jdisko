@@ -8,6 +8,7 @@ import java.util.List;
 
 @CommandLine.Command(
         name = "distributions",
+        aliases = {"dist"},
         description = "list all distributions"
 )
 public class DistributionsCommand extends BaseCommand implements Runnable {

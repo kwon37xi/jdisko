@@ -13,6 +13,7 @@ import java.util.List;
 
 @Command(
         name = "list",
+        aliases = {"ls"},
         description = "list JDKs of the target distribution or default distribution"
 )
 public class ListCommand extends BaseCommand implements Runnable {

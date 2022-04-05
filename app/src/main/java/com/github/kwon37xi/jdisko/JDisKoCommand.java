@@ -3,6 +3,7 @@ package com.github.kwon37xi.jdisko;
 import com.github.kwon37xi.jdisko.commands.DistributionsCommand;
 import com.github.kwon37xi.jdisko.commands.InstallCommand;
 import com.github.kwon37xi.jdisko.commands.ListCommand;
+import com.github.kwon37xi.jdisko.commands.RemoveCommand;
 import picocli.CommandLine.Command;
 
 @Command(
@@ -13,6 +14,7 @@ import picocli.CommandLine.Command;
         subcommands = {
                 ListCommand.class,
                 InstallCommand.class,
+                RemoveCommand.class,
                 DistributionsCommand.class
         }
 )
