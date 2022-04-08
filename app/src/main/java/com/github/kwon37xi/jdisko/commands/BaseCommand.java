@@ -1,6 +1,7 @@
 package com.github.kwon37xi.jdisko.commands;
 
 import eu.hansolo.jdktools.*;
+import eu.hansolo.jdktools.versioning.Semver;
 import eu.hansolo.jdktools.versioning.VersionNumber;
 import io.foojay.api.discoclient.DiscoClient;
 import io.foojay.api.discoclient.pkg.Distribution;
@@ -9,9 +10,13 @@ import io.foojay.api.discoclient.pkg.Pkg;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class BaseCommand {
     public static final int MAX_WAIT_ELAPSED_MILLIS = 10000;
+
+    public static final List<ArchiveType> SUPPORTED_ARCHIVE_TYPES = List.of(ArchiveType.TAR_GZ, ArchiveType.TGZ, ArchiveType.ZIP);
+
     private DiscoClient discoClient;
 
     public BaseCommand() {
@@ -65,19 +70,27 @@ public abstract class BaseCommand {
         return architecture;
     }
 
-    protected List<Pkg> findPackages(Distribution distribution, String version) {
-        return findPackages(distribution, version, operatingSystem(), architecture());
+    protected List<Pkg> findPackages(Distribution distribution) {
+        return findPackages(distribution, null, operatingSystem(), architecture(), null);
     }
 
-    protected List<Pkg> findPackages(Distribution distribution, String version, OperatingSystem operatingSystem, Architecture architecture) {
-        ArchiveType archiveType = archiveTypeForOS(operatingSystem);
-        return discoClient().getPkgs(List.of(distribution),
-                VersionNumber.fromText(version),
-                Latest.PER_VERSION, operatingSystem,
+    protected List<Pkg> findPackages(Distribution distribution, String javaVersion) {
+        return findPackages(distribution, javaVersion, operatingSystem(), architecture(), Latest.PER_VERSION);
+    }
+
+    protected List<Pkg> findPackages(Distribution distribution, String javaVersion, OperatingSystem operatingSystem, Architecture architecture) {
+        return findPackages(distribution, javaVersion, operatingSystem, architecture, Latest.PER_VERSION);
+    }
+
+    protected List<Pkg> findPackages(Distribution distribution, String javaVersion, OperatingSystem operatingSystem, Architecture architecture, Latest latest) {
+        final List<Pkg> packages = discoClient().getPkgs(List.of(distribution),
+                Optional.ofNullable(javaVersion).map(VersionNumber::fromText).orElse(null),
+                latest,
+                operatingSystem,
                 operatingSystem.getLibCType(),
                 architecture,
                 null,
-                archiveType,
+                null,
                 PackageType.JDK,
                 Boolean.FALSE,
                 null,
@@ -85,6 +98,8 @@ public abstract class BaseCommand {
                 null,
                 null,
                 null);
+        final List<Pkg> supportedPackages = packages.stream().filter(pkg -> SUPPORTED_ARCHIVE_TYPES.contains(pkg.getArchiveType())).toList();
+        return supportedPackages;
     }
 
     private ArchiveType archiveTypeForOS(OperatingSystem operatingSystem) {
@@ -106,7 +121,11 @@ public abstract class BaseCommand {
     }
 
     protected Path packageHome(Pkg jdk) {
-        return distributionHome(jdk.getDistribution()).resolve(jdk.getJavaVersion().toString()).toAbsolutePath();
+        return javaVersionHome(jdk.getDistribution(), jdk.getJavaVersion());
+    }
+
+    protected Path javaVersionHome(Distribution distribution, Semver javaVersion) {
+        return distributionHome(distribution).resolve(javaVersion.toString()).toAbsolutePath();
     }
 
     /**

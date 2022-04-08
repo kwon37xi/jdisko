@@ -27,8 +27,8 @@ public class InstallCommand extends BaseCommand implements Runnable {
     @Option(names = {"-d", "--distribution"}, description = "target distribution")
     private String distributionStr;
 
-    @Parameters(paramLabel = "<version>", defaultValue = "", description = "target version")
-    private String version;
+    @Parameters(paramLabel = "<java-version>", defaultValue = "", description = "target version")
+    private String javaVersionStr;
 
     @Override
     public void run() {
@@ -36,7 +36,7 @@ public class InstallCommand extends BaseCommand implements Runnable {
         OperatingSystem operatingSystem = operatingSystem();
         Architecture architecture = architecture();
 
-        final List<Pkg> packages = findPackages(distribution, version, operatingSystem, architecture);
+        final List<Pkg> packages = findPackages(distribution, this.javaVersionStr, operatingSystem, architecture);
         System.out.printf("installing packages : %n%s%n", packages.stream().map(Pkg::toString).collect(Collectors.joining("\n")));
         if (packages.isEmpty()) {
             throw new IllegalArgumentException("There are no candidate.");
