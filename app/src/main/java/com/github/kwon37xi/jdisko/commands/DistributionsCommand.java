@@ -22,7 +22,7 @@ public class DistributionsCommand extends BaseCommand implements Runnable {
     public void run() {
         final List<Distribution> distributions = discoClient().getDistributions();
         distributions.forEach(distribution -> {
-            System.out.printf("%20s\t%s%n", distribution.getName(), distribution.getUiString());
+            System.out.printf("%20s\t%s\t%s%n", distribution.getName().toLowerCase(), distribution.getUiString(), distribution.isMaintained());
         });
     }
 }
