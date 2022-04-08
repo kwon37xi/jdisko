@@ -8,13 +8,22 @@ import io.foojay.api.discoclient.pkg.Distribution;
 import io.foojay.api.discoclient.pkg.Pkg;
 
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collector;
+
+import static java.util.stream.Collectors.toMap;
 
 public abstract class BaseCommand {
     public static final int MAX_WAIT_ELAPSED_MILLIS = 10000;
 
+    /**
+     * Supported Archive Types.
+     * Some distributions only support zip even for linux.
+     */
     public static final List<ArchiveType> SUPPORTED_ARCHIVE_TYPES = List.of(ArchiveType.TAR_GZ, ArchiveType.TGZ, ArchiveType.ZIP);
 
     private DiscoClient discoClient;
@@ -98,8 +107,18 @@ public abstract class BaseCommand {
                 null,
                 null,
                 null);
-        final List<Pkg> supportedPackages = packages.stream().filter(pkg -> SUPPORTED_ARCHIVE_TYPES.contains(pkg.getArchiveType())).toList();
+        final List<Pkg> supportedPackages = packages.stream()
+                .filter(pkg -> SUPPORTED_ARCHIVE_TYPES.contains(pkg.getArchiveType()))
+                .collect(uniqueByJavaVersionWithSmallerSize())
+                .values()
+                .stream()
+                .sorted(Comparator.comparing(Pkg::getJavaVersion))
+                .toList();
         return supportedPackages;
+    }
+
+    private Collector<Pkg, ?, Map<Semver, Pkg>> uniqueByJavaVersionWithSmallerSize() {
+        return toMap(Pkg::getJavaVersion, Function.identity(), (Pkg p1, Pkg p2) -> p1.getSize() > p2.getSize() ? p2 : p1);
     }
 
     private ArchiveType archiveTypeForOS(OperatingSystem operatingSystem) {
