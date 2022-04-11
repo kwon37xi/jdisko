@@ -84,11 +84,11 @@ public abstract class BaseCommand {
     }
 
     protected List<Pkg> findPackages(Distribution distribution, String javaVersion) {
-        return findPackages(distribution, javaVersion, operatingSystem(), architecture(), Latest.PER_VERSION);
+        return findPackages(distribution, javaVersion, operatingSystem(), architecture(), Latest.ALL_OF_VERSION);
     }
 
     protected List<Pkg> findPackages(Distribution distribution, String javaVersion, OperatingSystem operatingSystem, Architecture architecture) {
-        return findPackages(distribution, javaVersion, operatingSystem, architecture, Latest.PER_VERSION);
+        return findPackages(distribution, javaVersion, operatingSystem, architecture, Latest.ALL_OF_VERSION);
     }
 
     protected List<Pkg> findPackages(Distribution distribution, String javaVersion, OperatingSystem operatingSystem, Architecture architecture, Latest latest) {
