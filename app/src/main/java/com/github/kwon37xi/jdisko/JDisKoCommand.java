@@ -1,22 +1,12 @@
 package com.github.kwon37xi.jdisko;
 
-import com.github.kwon37xi.jdisko.commands.DistributionsCommand;
-import com.github.kwon37xi.jdisko.commands.InstallCommand;
-import com.github.kwon37xi.jdisko.commands.ListCommand;
-import com.github.kwon37xi.jdisko.commands.RemoveCommand;
 import picocli.CommandLine.Command;
 
 @Command(
         name = "jdisko",
-        description = "JDisKo JDK installer",
+        description = "JDisKo JDK installer based on foojay's disco API.",
         versionProvider = JDisKoVersionProvider.class,
-        mixinStandardHelpOptions = true,
-        subcommands = {
-                ListCommand.class,
-                InstallCommand.class,
-                RemoveCommand.class,
-                DistributionsCommand.class
-        }
+        mixinStandardHelpOptions = true
 )
 public class JDisKoCommand implements Runnable {
     @Override
