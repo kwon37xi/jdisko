@@ -28,4 +28,4 @@ tags
 .sdkmanrc
 .gradle/
 .idea/
-
+.java-version
