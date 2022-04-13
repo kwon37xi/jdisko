@@ -21,11 +21,14 @@ import java.util.stream.Collectors;
 @Command(
         name = "install",
         aliases = {"i"},
-        description= "install JDK"
+        description = "install JDK"
 )
 public class InstallCommand extends BaseCommand implements Runnable {
     @Option(names = {"-d", "--distribution"}, description = "target distribution")
     private String distributionStr;
+
+    @Option(names = {"-p", "--print-installed-path-only"}, description = "quiet but print installed path only.", defaultValue = "false")
+    private boolean printInstalledPathOnly = false;
 
     @Parameters(paramLabel = "<java-version>", defaultValue = "", description = "target version")
     private String javaVersionStr;
@@ -37,7 +40,8 @@ public class InstallCommand extends BaseCommand implements Runnable {
         Architecture architecture = architecture();
 
         final List<Pkg> packages = findPackages(distribution, this.javaVersionStr, operatingSystem, architecture);
-        System.out.printf("installing packages : %n%s%n", packages.stream().map(Pkg::toString).collect(Collectors.joining("\n")));
+        log("installing packages : %n%s%n".formatted(packages.stream().map(Pkg::toString).collect(Collectors.joining("\n"))), !printInstalledPathOnly);
+
         if (packages.isEmpty()) {
             throw new IllegalArgumentException("There are no candidate.");
         }
@@ -46,25 +50,32 @@ public class InstallCommand extends BaseCommand implements Runnable {
         }
 
         final Pkg targetPackage = packages.get(0);
-        System.out.printf("installing - %s%n", targetPackage.getFileName());
+        log("installing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
         if (!targetPackage.isDirectlyDownloadable()) {
             throw new IllegalStateException(String.format("JDK %s %s is now downloadable.", targetPackage.getDistributionName(), targetPackage.getFileName()));
         }
 
         try {
             Path downloadFile = Files.createTempFile("jdisko-", targetPackage.getFileName());
-            System.out.printf("Start downloading - %s.%n", downloadFile);
+            log("Start downloading - %s.%n".formatted(downloadFile), !printInstalledPathOnly);
             final Future<?> downloading = discoClient().downloadPkg(targetPackage.getId(), downloadFile.toString());
             downloading.get();
-            System.out.printf("Downloading succeeded - %s.%n", targetPackage.getFileName());
+            log("Downloading succeeded - %s.%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
             final Decompressor decompressor = DecompressorFactory.decompressorFor(downloadFile);
 
-            System.out.printf("Decompressing - %s%n", targetPackage.getFileName());
+            log("Decompressing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
             final Path targetDir = packageHome(targetPackage);
             decompressor.decompress(downloadFile, targetDir);
-            System.out.printf("Decompressed to %s%n.", targetDir.toString());
+            log("Decompressed to %s%n.".formatted(targetDir.toString()), !printInstalledPathOnly);
+            log(targetDir.toFile().getAbsolutePath(), printInstalledPathOnly);
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new IllegalStateException(String.format("Download failed - %s.", targetPackage.getFileName()), e);
+        }
+    }
+
+    private void log(String message, boolean printable) {
+        if (printable) {
+            System.out.println(message);
         }
     }
 }

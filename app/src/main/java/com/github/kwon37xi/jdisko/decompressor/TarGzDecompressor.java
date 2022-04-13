@@ -36,7 +36,6 @@ public class TarGzDecompressor implements Decompressor {
 
             TarArchiveEntry entry;
             while ((entry = tis.getNextTarEntry()) != null) {
-                System.out.println("Entry : " + entry.getName());
                 Path newPath = zipSlipProtect(entry, targetVersionDir);
 
                 if (newPath.equals(targetVersionDir)) {
