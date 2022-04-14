@@ -5,6 +5,7 @@ import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
 import com.github.kwon37xi.jdisko.decompressor.Decompressor;
 import com.github.kwon37xi.jdisko.decompressor.DecompressorFactory;
 import eu.hansolo.jdktools.Architecture;
+import eu.hansolo.jdktools.Latest;
 import eu.hansolo.jdktools.OperatingSystem;
 import io.foojay.api.discoclient.pkg.Distribution;
 import io.foojay.api.discoclient.pkg.Pkg;
@@ -48,7 +49,8 @@ public class InstallCommand extends BaseCommand implements Runnable {
         OperatingSystem targetOperatingSystem = Optional.ofNullable(operatingSystem).orElseGet(this::operatingSystem);
         Architecture targetArchitecture = Optional.ofNullable(architecture).orElseGet(this::architecture);
 
-        final List<Pkg> packages = findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture);
+        final List<Pkg> packages = findCandidates(distribution, targetOperatingSystem, targetArchitecture);
+
         log("installing packages : %n%s%n".formatted(packages.stream().map(Pkg::toString).collect(Collectors.joining("\n"))), !printInstalledPathOnly);
 
         if (packages.isEmpty()) {
@@ -80,6 +82,14 @@ public class InstallCommand extends BaseCommand implements Runnable {
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new IllegalStateException(String.format("Download failed - %s.", targetPackage.getFileName()), e);
         }
+    }
+
+    private List<Pkg> findCandidates(Distribution distribution, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {
+        final boolean isTargettingExactVersion = this.javaVersionStr.contains(".");
+        if (isTargettingExactVersion) {
+            return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, null);
+        }
+        return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, Latest.PER_VERSION);
     }
 
     private void log(String message, boolean printable) {

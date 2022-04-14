@@ -2,9 +2,8 @@ package com.github.kwon37xi.jdisko.decompressor;
 
 import com.github.kwon37xi.jdisko.FileUtils;
 import org.apache.commons.compress.archivers.ArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -13,27 +12,21 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class TarGzDecompressor implements Decompressor {
+public class ZipDecompressor implements Decompressor {
     @Override
     public boolean acceptable(Path compressedFile) {
-        return compressedFile.toString().toLowerCase().endsWith(".tar.gz");
+        return compressedFile.toString().toLowerCase().endsWith(".zip");
     }
 
-    /**
-     * @param compressedFile
-     * @param targetVersionDir
-     * @see <a href="https://cdmana.com/2021/07/20210727022326883H.html">Use Java API to compress and decompress tar.gz file and folder</a>
-     */
     @Override
     public void decompress(Path compressedFile, Path targetVersionDir) throws IOException {
         Files.createDirectories(targetVersionDir);
         try (InputStream fis = Files.newInputStream(compressedFile);
              BufferedInputStream bis = new BufferedInputStream(fis);
-             GzipCompressorInputStream gzis = new GzipCompressorInputStream(bis);
-             TarArchiveInputStream tis = new TarArchiveInputStream(gzis)) {
+             ZipArchiveInputStream zis = new ZipArchiveInputStream(bis)) {
 
-            TarArchiveEntry entry;
-            while ((entry = tis.getNextTarEntry()) != null) {
+            ZipArchiveEntry entry;
+            while ((entry = zis.getNextZipEntry()) != null) {
                 Path newPath = zipSlipProtect(entry, targetVersionDir);
 
                 if (newPath.equals(targetVersionDir)) {
@@ -53,11 +46,8 @@ public class TarGzDecompressor implements Decompressor {
 
                 // tis 전체를 다 읽는게 아니라 tis 가 currentEntry 내에서만 read 를 호출하기 때문에
                 // 전체 InputStream이 다 써지는게 아니라 currentEntry의 내용만 복제된다.
-                Files.copy(tis, newPath, StandardCopyOption.REPLACE_EXISTING);
-
-                Files.setPosixFilePermissions(newPath, FileUtils.modeToPermissions(entry.getMode()));
+                Files.copy(zis, newPath, StandardCopyOption.REPLACE_EXISTING);
             }
-
         }
     }
 

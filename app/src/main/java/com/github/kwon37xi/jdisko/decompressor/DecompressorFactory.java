@@ -9,6 +9,7 @@ public class DecompressorFactory {
 
     static {
         decompressors.add(new TarGzDecompressor());
+        decompressors.add(new ZipDecompressor());
     }
 
     public static Decompressor decompressorFor(Path archiveFile) {
