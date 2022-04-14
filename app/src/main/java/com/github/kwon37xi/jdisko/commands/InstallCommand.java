@@ -1,5 +1,7 @@
 package com.github.kwon37xi.jdisko.commands;
 
+import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
 import com.github.kwon37xi.jdisko.decompressor.Decompressor;
 import com.github.kwon37xi.jdisko.decompressor.DecompressorFactory;
 import eu.hansolo.jdktools.Architecture;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
@@ -27,6 +30,12 @@ public class InstallCommand extends BaseCommand implements Runnable {
     @Option(names = {"-d", "--distribution"}, description = "target distribution")
     private String distributionStr;
 
+    @Option(names = {"-o", "--operating-system"}, description = "force OS", converter = OperatingSystemOptionConverter.class, required = false)
+    private OperatingSystem operatingSystem;
+
+    @Option(names = {"-a", "--architecture"}, description = "force architecture", converter = ArchitectureOptionConverter.class, required = false)
+    private Architecture architecture;
+
     @Option(names = {"-p", "--print-installed-path-only"}, description = "quiet but print installed path only.", defaultValue = "false")
     private boolean printInstalledPathOnly = false;
 
@@ -36,10 +45,10 @@ public class InstallCommand extends BaseCommand implements Runnable {
     @Override
     public void run() {
         Distribution distribution = findDistribution(distributionStr);
-        OperatingSystem operatingSystem = operatingSystem();
-        Architecture architecture = architecture();
+        OperatingSystem targetOperatingSystem = Optional.ofNullable(operatingSystem).orElseGet(this::operatingSystem);
+        Architecture targetArchitecture = Optional.ofNullable(architecture).orElseGet(this::architecture);
 
-        final List<Pkg> packages = findPackages(distribution, this.javaVersionStr, operatingSystem, architecture);
+        final List<Pkg> packages = findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture);
         log("installing packages : %n%s%n".formatted(packages.stream().map(Pkg::toString).collect(Collectors.joining("\n"))), !printInstalledPathOnly);
 
         if (packages.isEmpty()) {

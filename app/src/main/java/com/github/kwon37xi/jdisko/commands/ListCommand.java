@@ -1,12 +1,16 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import java.util.List;
+import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
 import eu.hansolo.jdktools.Architecture;
 import eu.hansolo.jdktools.OperatingSystem;
 import io.foojay.api.discoclient.pkg.Distribution;
 import io.foojay.api.discoclient.pkg.Pkg;
-import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+
+import java.util.List;
+import java.util.Optional;
 
 @Command(
         name = "list",
@@ -17,21 +21,27 @@ public class ListCommand extends BaseCommand implements Runnable {
 
     private static final int MAJOR_VERSION_DISABLED = -1;
 
-    @CommandLine.Option(names = {"-d", "--distribution"}, description = "target distribution")
+    @Option(names = {"-d", "--distribution"}, description = "target distribution")
     private String distributionStr;
 
-    @CommandLine.Option(names = {"-m", "--major-version"}, description = "target major version", defaultValue = "-1")
+    @Option(names = {"-m", "--major-version"}, description = "target major version", defaultValue = "-1")
     private int majorJavaVersionNum = MAJOR_VERSION_DISABLED;
+
+    @Option(names = {"-o", "--operating-system"}, description = "force OS", converter = OperatingSystemOptionConverter.class, required = false)
+    private OperatingSystem operatingSystem;
+
+    @Option(names = {"-a", "--architecture"}, description = "force architecture", converter = ArchitectureOptionConverter.class, required = false)
+    private Architecture architecture;
 
     @Override
     public void run() {
         final Distribution distribution = findDistribution(distributionStr);
-        final OperatingSystem operatingSystem = operatingSystem();
-        final Architecture architecture = architecture();
+        OperatingSystem targetOperatingSystem = Optional.ofNullable(operatingSystem).orElseGet(this::operatingSystem);
+        Architecture targetArchitecture = Optional.ofNullable(architecture).orElseGet(this::architecture);
 
-        System.out.printf("OS %s, arch : %s%n", operatingSystem, architecture);
+        System.out.printf("OS %s, arch : %s%n", targetOperatingSystem, targetArchitecture);
 
-        final List<Pkg> pkgs = listDistributions(distribution, majorJavaVersionNum);
+        final List<Pkg> pkgs = listDistributions(distribution, majorJavaVersionNum, targetOperatingSystem, targetArchitecture);
 
         pkgs.forEach(pkg -> {
             final Distribution dist = pkg.getDistribution();
@@ -39,11 +49,11 @@ public class ListCommand extends BaseCommand implements Runnable {
         });
     }
 
-    private List<Pkg> listDistributions(final Distribution distribution, int majorJavaVersionNum) {
+    private List<Pkg> listDistributions(final Distribution distribution, int majorJavaVersionNum, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {
         if (majorJavaVersionNum == MAJOR_VERSION_DISABLED) {
-            return findPackages(distribution);
+            return findPackages(distribution, null, targetOperatingSystem, targetArchitecture, null);
         }
-        return findPackages(distribution, String.valueOf(majorJavaVersionNum));
+        return findPackages(distribution, String.valueOf(majorJavaVersionNum), operatingSystem, targetArchitecture);
     }
 
 
