@@ -53,14 +53,12 @@ public class TarGzDecompressor implements Decompressor {
 
                 if (entry.isSymbolicLink()) {
                     final Path linkTarget = newPath.getParent().resolve(entry.getLinkName()).toAbsolutePath();
-                    System.out.printf("creating symbolic link %s to %s%n", newPath, linkTarget);
                     Files.createSymbolicLink(newPath, linkTarget);
                     continue;
                 }
 
                 if (entry.isLink()) {
                     final Path linkTarget = newPath.getParent().resolve(entry.getLinkName()).toAbsolutePath();
-                    System.out.printf("creating link %s to %s%n", newPath, linkTarget);
                     Files.createLink(newPath, linkTarget);
                     continue;
                 }
