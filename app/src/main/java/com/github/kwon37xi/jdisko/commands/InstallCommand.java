@@ -1,6 +1,7 @@
 package com.github.kwon37xi.jdisko.commands;
 
 import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.FileUtils;
 import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
 import com.github.kwon37xi.jdisko.decompressor.Decompressor;
 import com.github.kwon37xi.jdisko.decompressor.DecompressorFactory;
@@ -69,7 +70,7 @@ public class InstallCommand extends BaseCommand implements Runnable {
         try {
             final Path downloadFile = Files.createTempFile("jdisko-", targetPackage.getFileName());
             log("Start downloading - %s.%n".formatted(downloadFile), !printInstalledPathOnly);
-            addDeleteOnExistHook(downloadFile);
+            FileUtils.addDeleteOnExistHook(downloadFile);
             final Future<?> downloading = discoClient().downloadPkg(targetPackage.getId(), downloadFile.toString());
             downloading.get();
             log("Downloading succeeded - %s.%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
@@ -83,17 +84,6 @@ public class InstallCommand extends BaseCommand implements Runnable {
         } catch (IOException | InterruptedException | ExecutionException e) {
             throw new IllegalStateException(String.format("Download failed - %s.", targetPackage.getFileName()), e);
         }
-    }
-
-    private void addDeleteOnExistHook(Path downloadFile) {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                System.out.printf("Deleting downloaded file - %s.%n", downloadFile);
-                Files.delete(downloadFile);
-            } catch (IOException e) {
-                System.err.printf("Failed to delete downloaded file '%s'. - %s%n", downloadFile, e.getMessage());
-            }
-        }));
     }
 
     private List<Pkg> findCandidates(Distribution distribution, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {

@@ -57,4 +57,15 @@ public class FileUtils {
         }
         return result;
     }
+
+    public static void addDeleteOnExistHook(Path downloadFile) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                System.out.printf("Deleting downloaded file - %s.%n", downloadFile);
+                Files.delete(downloadFile);
+            } catch (IOException e) {
+                System.err.printf("Failed to delete downloaded file '%s'. - %s%n", downloadFile, e.getMessage());
+            }
+        }));
+    }
 }
