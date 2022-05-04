@@ -31,9 +31,9 @@ public class DistributionsCommand extends BaseCommand implements Runnable {
         final List<Distribution> distributions = discoClient().getDistributions();
 
             if (namesOnly) {
-                distributions.forEach(distribution -> System.out.printf("%s%n", distribution.getName().toLowerCase()));
+                distributions.forEach(distribution -> System.out.printf("%s%n", distribution.getApiString().toLowerCase()));
             } else {
-                distributions.forEach(distribution -> System.out.printf("%20s\t%s\t%s%n", distribution.getName().toLowerCase(), distribution.getUiString(), distribution.isMaintained()));
+                distributions.forEach(distribution -> System.out.printf("%20s\t%s\t%s%n", distribution.getApiString().toLowerCase(), distribution.getUiString(), distribution.isMaintained()));
             }
     }
 }
