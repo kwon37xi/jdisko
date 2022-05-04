@@ -1,8 +1,12 @@
 plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'org.graalvm.buildtools.native' version '0.9.11'
 }
 
+ext {
+    picocliVersion = '4.6.3'
+}
 sourceCompatibility = 17
 targetCompatibility = 17
 
@@ -15,19 +19,42 @@ dependencies {
     // https://mvnrepository.com/artifact/io.foojay.api/discoclient
     implementation 'io.foojay.api:discoclient:2.0.23'
     // https://mvnrepository.com/artifact/info.picocli/picocli
-    implementation 'info.picocli:picocli:4.6.3'
+    implementation "info.picocli:picocli:${picocliVersion}"
     // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
     implementation 'org.apache.commons:commons-compress:1.21'
+
+    // generate build/classes/java/main/META-INF/native-image/picocli-generate/*.json
+    // If the following annotationProcecessor missed, jdisko binary does not execute properly.
+    annotationProcessor "info.picocli:picocli-codegen:${picocliVersion}"
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
 application {
-    // Define the main class for the application.
     mainClass = 'com.github.kwon37xi.jdisko.JDisKoApp'
 }
 
 tasks.named('test') {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+task('hello') {
+    doLast {
+        println application.mainClassName
+
+    }
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = "jdisko"
+            // mainClass auto detected
+//            mainClass = application.mainClassName
+            debug = false
+            verbose = true
+            sharedLibrary = false
+            // picocli configuration file auto detected
+//            configurationFileDirectories.from(file("build/classes/java/main/META-INF/picocli-generated"))
+        }
+    }
 }

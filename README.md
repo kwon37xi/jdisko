@@ -5,6 +5,20 @@ JDisKo is a cross-platform JDK installer using
 ## Install
 * Download an executable file which fits your OS from [JDisKo Releases](https://github.com/kwon37xi/jdisko/releases).
 
+## Build native binary
+* references
+  * https://graalvm.github.io/native-build-tools/latest/gradle-plugin.html
+  * https://picocli.info/picocli-on-graalvm.html
+  * https://github.com/remkop/picocli-native-image-demo
+
+* requirements
+  * GraalVM 22.1.0 Java 17 CE
+  * `gcc`
+```
+./gradlew nativeCompile
+```
+  * `jdisko` native executable will be generated on `app/build/native/nativeCompile`
+
 ## TODO
 * disco client 를 추상화할것. 옵션이 너무 많음.
 * 각 메이저 버전별 최신 버전 목록 리스팅
