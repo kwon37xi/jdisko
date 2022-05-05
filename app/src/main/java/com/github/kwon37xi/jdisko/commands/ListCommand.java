@@ -39,13 +39,13 @@ public class ListCommand extends BaseCommand implements Runnable {
         OperatingSystem targetOperatingSystem = Optional.ofNullable(operatingSystem).orElseGet(this::operatingSystem);
         Architecture targetArchitecture = Optional.ofNullable(architecture).orElseGet(this::architecture);
 
-        System.out.printf("OS %s, arch : %s%n", targetOperatingSystem, targetArchitecture);
+        System.out.printf("OS %s, arch : %s%n", targetOperatingSystem.getApiString(), targetArchitecture.getApiString());
 
         final List<Pkg> pkgs = listDistributions(distribution, majorJavaVersionNum, targetOperatingSystem, targetArchitecture);
 
         pkgs.forEach(pkg -> {
             final Distribution dist = pkg.getDistribution();
-            System.out.printf("%s %s %s%n", dist.getName(), pkg.getJavaVersion(), pkg.getFileName());
+            System.out.printf("%s %s %s%n", dist.getApiString(), pkg.getJavaVersion(), pkg.getFileName());
         });
     }
 
@@ -55,6 +55,4 @@ public class ListCommand extends BaseCommand implements Runnable {
         }
         return findPackages(distribution, String.valueOf(majorJavaVersionNum), operatingSystem, targetArchitecture);
     }
-
-
 }
