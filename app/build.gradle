@@ -37,12 +37,6 @@ application {
 tasks.named('test') {
     useJUnitPlatform()
 }
-task('hello') {
-    doLast {
-        println application.mainClassName
-
-    }
-}
 
 graalvmNative {
     binaries {
@@ -57,4 +51,9 @@ graalvmNative {
 //            configurationFileDirectories.from(file("build/classes/java/main/META-INF/picocli-generated"))
         }
     }
+}
+
+tasks.create(name: "install-native", type: Copy, dependsOn: nativeCompile) {
+    from(nativeCompile.outputFile)
+    into(System.getProperty("user.home") + "/.local/bin/")
 }
