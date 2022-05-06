@@ -1,13 +1,9 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import eu.hansolo.jdktools.Architecture;
 import eu.hansolo.jdktools.OperatingSystem;
 import picocli.CommandLine.Command;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Command(
         name = "operatingsystems",

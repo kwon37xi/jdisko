@@ -10,8 +10,11 @@ import picocli.CommandLine.Command;
         mixinStandardHelpOptions = true
 )
 public class JDisKoCommand implements Runnable {
+    @CommandLine.Spec
+    private CommandLine.Model.CommandSpec commandSpec;
     @Override
     public void run() {
-        System.out.println("JDisKo JDK installer");
+        final CommandLine commandLine = commandSpec.commandLine();
+        commandLine.usage(commandLine.getOut());
     }
 }
