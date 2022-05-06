@@ -1,9 +1,6 @@
 package com.github.kwon37xi.jdisko;
 
-import com.github.kwon37xi.jdisko.commands.DistributionsCommand;
-import com.github.kwon37xi.jdisko.commands.InstallCommand;
-import com.github.kwon37xi.jdisko.commands.ListCommand;
-import com.github.kwon37xi.jdisko.commands.RemoveCommand;
+import com.github.kwon37xi.jdisko.commands.*;
 import picocli.CommandLine;
 
 public class JDisKoApp {
@@ -13,6 +10,7 @@ public class JDisKoApp {
         final CommandLine commandLine = new CommandLine(jdiskoCommand);
         commandLine
                 .addSubcommand(new DistributionsCommand())
+                .addSubcommand(new ArchitecturesCommand())
                 .addSubcommand(new ListCommand())
                 .addSubcommand(new InstallCommand())
                 .addSubcommand(new RemoveCommand());

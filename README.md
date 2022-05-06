@@ -2,6 +2,8 @@
 JDisKo is a cross-platform JDK installer using
 [foojay's discoapi](https://github.com/foojayio/discoapi) and [discoclient](https://github.com/foojayio/discoclient).
 
+* [foojay DiscoAPI swagger UI](https://api.foojay.io/swagger-ui)
+
 ## Install
 * Download an executable file which fits your OS from [JDisKo Releases](https://github.com/kwon37xi/jdisko/releases).
 
