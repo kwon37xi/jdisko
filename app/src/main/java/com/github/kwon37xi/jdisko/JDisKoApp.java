@@ -11,6 +11,7 @@ public class JDisKoApp {
         commandLine
                 .addSubcommand(new DistributionsCommand())
                 .addSubcommand(new ArchitecturesCommand())
+                .addSubcommand(new OperatingSystemsCommand())
                 .addSubcommand(new ListCommand())
                 .addSubcommand(new InstallCommand())
                 .addSubcommand(new RemoveCommand());

@@ -1,5 +1,6 @@
 package com.github.kwon37xi.jdisko;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Command(
