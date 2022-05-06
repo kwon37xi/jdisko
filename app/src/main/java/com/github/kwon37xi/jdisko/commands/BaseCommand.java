@@ -1,5 +1,6 @@
 package com.github.kwon37xi.jdisko.commands;
 
+import com.github.kwon37xi.jdisko.EnvironmentVariable;
 import eu.hansolo.jdktools.*;
 import eu.hansolo.jdktools.versioning.Semver;
 import eu.hansolo.jdktools.versioning.VersionNumber;
@@ -52,7 +53,7 @@ public abstract class BaseCommand {
 
     protected Distribution defaultDistribution() {
         final Map<String, Distribution> distros = discoClient().getDistros();
-        final Distribution defaultDistribution = distros.get("temurin");
+        final Distribution defaultDistribution = distros.get(EnvironmentVariable.JDISKO_DEFAULT_DISTRIBUTION.getEnvValue());
         return defaultDistribution;
     }
 
@@ -68,13 +69,13 @@ public abstract class BaseCommand {
     }
 
     protected OperatingSystem operatingSystem() {
-        final String osName = System.getProperty("os.name");
+        final String osName = EnvironmentVariable.JDISKO_DEFAULT_OPERATING_SYSTEM.getEnvValue();
         final OperatingSystem operatingSystem = OperatingSystem.fromText(osName);
         return operatingSystem;
     }
 
     protected Architecture architecture() {
-        final String osArch = System.getProperty("os.arch");
+        final String osArch = EnvironmentVariable.JDISKO_DEFAULT_ARCHITECTURE.getEnvValue();
         final Architecture architecture = Architecture.fromText(osArch);
         return architecture;
     }
@@ -132,7 +133,7 @@ public abstract class BaseCommand {
      *
      */
     protected Path jdiskoHome() {
-        return Path.of(System.getProperty("user.home"), ".jdisko");
+        return Path.of(EnvironmentVariable.JDISKO_HOME.getEnvValue());
     }
 
     protected Path distributionHome(Distribution distribution) {
