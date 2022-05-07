@@ -44,6 +44,10 @@ public class RemoveCommand extends BaseCommand implements Runnable {
 
         final Path jdkHome = findMatchedJavaVersionHome(distribution, javaVersion, targetArchitecture);
 
+        if (jdkHome == null) {
+            throw new IllegalStateException(String.format("JDK %s %s_%s has not been installed.",
+                    distribution.getApiString(), javaVersion, targetArchitecture.getApiString()));
+        }
         if (!Files.isDirectory(jdkHome)) {
             throw new IllegalStateException(String.format("%s is not directory.", jdkHome));
         }
@@ -62,7 +66,7 @@ public class RemoveCommand extends BaseCommand implements Runnable {
         synonyms.addAll(targetArchitecture.getSynonyms());
 
         for (Architecture currentArchitecture : synonyms) {
-            final Path jdkHome = javaVersionHome(distribution, javaVersion, currentArchitecture.getApiString());
+            final Path jdkHome = packageHome(distribution, javaVersion, currentArchitecture.getApiString());
 
             if (Files.exists(jdkHome)) {
                 return jdkHome;

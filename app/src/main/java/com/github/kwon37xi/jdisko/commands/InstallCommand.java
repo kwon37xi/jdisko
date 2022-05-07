@@ -65,9 +65,9 @@ public class InstallCommand extends BaseCommand implements Runnable {
 
         final Pkg targetPackage = packages.get(0);
         log("installing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
-        if (!targetPackage.isDirectlyDownloadable()) {
-            throw new IllegalStateException(String.format("JDK %s %s is not downloadable.", targetPackage.getDistributionName(), targetPackage.getFileName()));
-        }
+
+        verifyDownloadable(targetPackage);
+        verifyAlreadyInstalled(targetPackage);
 
         try {
             final Path downloadFile = Files.createTempFile("jdisko-", targetPackage.getFileName());
@@ -77,6 +77,19 @@ public class InstallCommand extends BaseCommand implements Runnable {
             decompress(targetPackage, downloadFile);
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException(String.format("Download failed - %s.", targetPackage.getFileName()), e);
+        }
+    }
+
+    private void verifyAlreadyInstalled(Pkg targetPackage) {
+        if (Files.exists(packageHome(targetPackage))) {
+            throw new IllegalStateException(String.format("JDK %s %s_%s is already installed.",
+                    targetPackage.getDistributionName(), targetPackage.getJavaVersion(), targetPackage.getArchitecture().getApiString()));
+        }
+    }
+
+    private void verifyDownloadable(Pkg targetPackage) {
+        if (!targetPackage.isDirectlyDownloadable()) {
+            throw new IllegalStateException(String.format("JDK %s %s is not downloadable.", targetPackage.getDistributionName(), targetPackage.getFileName()));
         }
     }
 
@@ -111,10 +124,10 @@ public class InstallCommand extends BaseCommand implements Runnable {
         final Decompressor decompressor = DecompressorFactory.decompressorFor(downloadFile);
 
         log("Decompressing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
-        final Path targetDir = packageHome(targetPackage);
-        decompressor.decompress(downloadFile, targetDir);
-        log("Decompressed to %s%n.".formatted(targetDir.toString()), !printInstalledPathOnly);
-        log(targetDir.toFile().getAbsolutePath(), printInstalledPathOnly);
+        final Path targetPackageDir = packageHome(targetPackage);
+        decompressor.decompress(downloadFile, targetPackageDir);
+        log("Decompressed to %s%n.".formatted(targetPackageDir.toString()), !printInstalledPathOnly);
+        log(targetPackageDir.toFile().getAbsolutePath(), printInstalledPathOnly);
     }
 
     private void log(String message, boolean printable) {

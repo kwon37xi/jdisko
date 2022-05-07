@@ -27,7 +27,7 @@ public abstract class BaseCommand {
      */
     public static final List<ArchiveType> SUPPORTED_ARCHIVE_TYPES = List.of(ArchiveType.TAR_GZ, ArchiveType.TGZ, ArchiveType.ZIP);
 
-    private DiscoClient discoClient;
+    private final DiscoClient discoClient;
 
     public BaseCommand() {
         this.discoClient = new DiscoClient("JDisKo");
@@ -141,17 +141,17 @@ public abstract class BaseCommand {
     }
 
     protected Path packageHome(Pkg jdk) {
-        return javaVersionHome(jdk.getDistribution(), jdk.getJavaVersion(), jdk.getArchitecture());
+        return packageHome(jdk.getDistribution(), jdk.getJavaVersion(), jdk.getArchitecture());
     }
 
-    protected Path javaVersionHome(Distribution distribution, Semver javaVersion, Architecture architecture) {
-        return javaVersionHome(distribution, javaVersion.toString(), architecture.getApiString());
+    protected Path packageHome(Distribution distribution, Semver javaVersion, Architecture architecture) {
+        return packageHome(distribution, javaVersion.toString(), architecture.getApiString());
     }
 
     /**
      * JDK javaVersion home directory
      */
-    protected Path javaVersionHome(Distribution distribution, String javaVersion, String architectureApiString) {
+    protected Path packageHome(Distribution distribution, String javaVersion, String architectureApiString) {
         final String javaVersionHomeFinal = String.format("%s_%s", javaVersion, architectureApiString);
         return distributionHome(distribution).resolve(javaVersionHomeFinal).toAbsolutePath();
     }
