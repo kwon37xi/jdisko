@@ -74,16 +74,18 @@ public class InstallCommand extends BaseCommand implements Runnable {
             log("Start downloading - %s.%n".formatted(downloadFile), !printInstalledPathOnly);
             FileUtils.addDeleteOnExistHook(downloadFile);
             downloadPackage(targetPackage, downloadFile);
-            final Decompressor decompressor = DecompressorFactory.decompressorFor(downloadFile);
-
-            log("Decompressing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
-            final Path targetDir = packageHome(targetPackage);
-            decompressor.decompress(downloadFile, targetDir);
-            log("Decompressed to %s%n.".formatted(targetDir.toString()), !printInstalledPathOnly);
-            log(targetDir.toFile().getAbsolutePath(), printInstalledPathOnly);
+            decompress(targetPackage, downloadFile);
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException(String.format("Download failed - %s.", targetPackage.getFileName()), e);
         }
+    }
+
+    private List<Pkg> findCandidates(Distribution distribution, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {
+        final boolean isTargettingExactVersion = this.javaVersionStr.contains(".");
+        if (isTargettingExactVersion) {
+            return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, null);
+        }
+        return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, Latest.PER_VERSION);
     }
 
     private void downloadPackage(Pkg targetPackage, Path downloadFile) throws IOException, URISyntaxException {
@@ -105,12 +107,14 @@ public class InstallCommand extends BaseCommand implements Runnable {
         log("%n%nDownloading succeeded - %s.%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
     }
 
-    private List<Pkg> findCandidates(Distribution distribution, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {
-        final boolean isTargettingExactVersion = this.javaVersionStr.contains(".");
-        if (isTargettingExactVersion) {
-            return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, null);
-        }
-        return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, Latest.PER_VERSION);
+    private void decompress(Pkg targetPackage, Path downloadFile) throws IOException {
+        final Decompressor decompressor = DecompressorFactory.decompressorFor(downloadFile);
+
+        log("Decompressing - %s%n".formatted(targetPackage.getFileName()), !printInstalledPathOnly);
+        final Path targetDir = packageHome(targetPackage);
+        decompressor.decompress(downloadFile, targetDir);
+        log("Decompressed to %s%n.".formatted(targetDir.toString()), !printInstalledPathOnly);
+        log(targetDir.toFile().getAbsolutePath(), printInstalledPathOnly);
     }
 
     private void log(String message, boolean printable) {

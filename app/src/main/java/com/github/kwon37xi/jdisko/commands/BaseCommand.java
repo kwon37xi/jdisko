@@ -141,17 +141,18 @@ public abstract class BaseCommand {
     }
 
     protected Path packageHome(Pkg jdk) {
-        return javaVersionHome(jdk.getDistribution(), jdk.getJavaVersion());
+        return javaVersionHome(jdk.getDistribution(), jdk.getJavaVersion(), jdk.getArchitecture());
     }
 
-    protected Path javaVersionHome(Distribution distribution, Semver javaVersion) {
-        return distributionHome(distribution).resolve(javaVersion.toString()).toAbsolutePath();
+    protected Path javaVersionHome(Distribution distribution, Semver javaVersion, Architecture architecture) {
+        return javaVersionHome(distribution, javaVersion.toString(), architecture.getApiString());
     }
 
     /**
      * JDK javaVersion home directory
      */
-    protected Path javaVersionHome(Distribution distribution, String javaVersion) {
-        return distributionHome(distribution).resolve(javaVersion).toAbsolutePath();
+    protected Path javaVersionHome(Distribution distribution, String javaVersion, String architectureApiString) {
+        final String javaVersionHomeFinal = String.format("%s_%s", javaVersion, architectureApiString);
+        return distributionHome(distribution).resolve(javaVersionHomeFinal).toAbsolutePath();
     }
 }
