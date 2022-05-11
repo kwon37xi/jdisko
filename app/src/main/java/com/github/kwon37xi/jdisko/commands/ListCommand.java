@@ -1,7 +1,7 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
-import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
+import com.github.kwon37xi.jdisko.converter.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.converter.OperatingSystemOptionConverter;
 import eu.hansolo.jdktools.Architecture;
 import eu.hansolo.jdktools.OperatingSystem;
 import io.foojay.api.discoclient.pkg.Distribution;

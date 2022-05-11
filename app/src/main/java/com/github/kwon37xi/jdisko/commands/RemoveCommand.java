@@ -1,6 +1,6 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.converter.ArchitectureOptionConverter;
 import com.github.kwon37xi.jdisko.EnvironmentVariable;
 import com.github.kwon37xi.jdisko.FileUtils;
 import eu.hansolo.jdktools.Architecture;

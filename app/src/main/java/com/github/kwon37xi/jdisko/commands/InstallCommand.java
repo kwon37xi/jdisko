@@ -1,8 +1,8 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import com.github.kwon37xi.jdisko.ArchitectureOptionConverter;
+import com.github.kwon37xi.jdisko.converter.ArchitectureOptionConverter;
 import com.github.kwon37xi.jdisko.FileUtils;
-import com.github.kwon37xi.jdisko.OperatingSystemOptionConverter;
+import com.github.kwon37xi.jdisko.converter.OperatingSystemOptionConverter;
 import com.github.kwon37xi.jdisko.decompressor.Decompressor;
 import com.github.kwon37xi.jdisko.decompressor.DecompressorFactory;
 import eu.hansolo.jdktools.Architecture;

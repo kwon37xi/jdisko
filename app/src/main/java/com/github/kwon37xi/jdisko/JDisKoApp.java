@@ -13,6 +13,7 @@ public class JDisKoApp {
                 .addSubcommand(new ArchitecturesCommand())
                 .addSubcommand(new OperatingSystemsCommand())
                 .addSubcommand(new ListCommand())
+                .addSubcommand(new ListInstalledCommand())
                 .addSubcommand(new InstallCommand())
                 .addSubcommand(new RemoveCommand());
 

@@ -1,4 +1,4 @@
-package com.github.kwon37xi.jdisko;
+package com.github.kwon37xi.jdisko.converter;
 
 import eu.hansolo.jdktools.Architecture;
 import picocli.CommandLine;
