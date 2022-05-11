@@ -94,8 +94,8 @@ public class InstallCommand extends BaseCommand implements Runnable {
     }
 
     private List<Pkg> findCandidates(Distribution distribution, OperatingSystem targetOperatingSystem, Architecture targetArchitecture) {
-        final boolean isTargettingExactVersion = this.javaVersionStr.contains(".");
-        if (isTargettingExactVersion) {
+        final boolean isTargetingExactVersion = this.javaVersionStr.contains(".");
+        if (isTargetingExactVersion) {
             return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, null);
         }
         return findPackages(distribution, this.javaVersionStr, targetOperatingSystem, targetArchitecture, Latest.PER_VERSION);
