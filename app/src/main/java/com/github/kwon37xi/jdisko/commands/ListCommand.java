@@ -53,6 +53,6 @@ public class ListCommand extends BaseCommand implements Runnable {
         if (majorJavaVersionNum == MAJOR_VERSION_DISABLED) {
             return findPackages(distribution, null, targetOperatingSystem, targetArchitecture, null);
         }
-        return findPackages(distribution, String.valueOf(majorJavaVersionNum), operatingSystem, targetArchitecture);
+        return findPackages(distribution, String.valueOf(majorJavaVersionNum), targetOperatingSystem, targetArchitecture);
     }
 }

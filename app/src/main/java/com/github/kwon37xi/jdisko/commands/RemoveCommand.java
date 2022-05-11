@@ -35,10 +35,6 @@ public class RemoveCommand extends BaseCommand implements Runnable {
     public void run() {
         final Distribution distribution = findDistribution(distributionStr);
 
-        if (architecture == null) {
-            architecture = Architecture.fromText(EnvironmentVariable.JDISKO_DEFAULT_ARCHITECTURE.getEnvValue());
-        }
-
         final Architecture targetArchitecture = Optional.ofNullable(architecture)
                 .orElseGet(() -> Architecture.fromText(EnvironmentVariable.JDISKO_DEFAULT_ARCHITECTURE.getEnvValue()));
 

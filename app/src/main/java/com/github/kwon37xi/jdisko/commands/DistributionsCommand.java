@@ -1,6 +1,5 @@
 package com.github.kwon37xi.jdisko.commands;
 
-import eu.hansolo.jdktools.OperatingSystem;
 import io.foojay.api.discoclient.pkg.Distribution;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -20,11 +19,6 @@ public class DistributionsCommand extends BaseCommand implements Runnable {
             defaultValue = "false"
     )
     private boolean namesOnly = false;
-
-    @Override
-    protected OperatingSystem operatingSystem() {
-        return super.operatingSystem();
-    }
 
     @Override
     public void run() {
