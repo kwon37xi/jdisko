@@ -7,17 +7,9 @@ plugins {
 ext {
     picocliVersion = '4.6.3'
 }
-sourceCompatibility = 17
-targetCompatibility = 17
-
-repositories {
-    mavenCentral()
-}
 
 dependencies {
-
-    // https://mvnrepository.com/artifact/io.foojay.api/discoclient
-    implementation 'io.foojay.api:discoclient:2.0.23'
+    implementation project(":disco-java-client")
     // https://mvnrepository.com/artifact/info.picocli/picocli
     implementation "info.picocli:picocli:${picocliVersion}"
     // https://mvnrepository.com/artifact/org.apache.commons/commons-compress
@@ -26,16 +18,10 @@ dependencies {
     // generate build/classes/java/main/META-INF/native-image/picocli-generate/*.json
     // If the following annotationProcecessor missed, jdisko binary does not execute properly.
     annotationProcessor "info.picocli:picocli-codegen:${picocliVersion}"
-
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
 application {
     mainClass = 'com.github.kwon37xi.jdisko.JDisKoApp'
-}
-
-tasks.named('test') {
-    useJUnitPlatform()
 }
 
 graalvmNative {

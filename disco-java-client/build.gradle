@@ -1,0 +1,8 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/io.foojay.api/discoclient
+    api 'io.foojay.api:discoclient:2.0.23'
+}

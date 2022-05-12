@@ -9,3 +9,5 @@
 
 rootProject.name = 'jdisko'
 include('app')
+include('disco-java-client')
+
